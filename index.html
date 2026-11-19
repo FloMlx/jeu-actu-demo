@@ -1,39 +1,176 @@
 <!doctype html>
-<html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Un manifestant, trois formulaires</title>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Une satire jouable de la navette parlementaire.">
+<title>Tampon Navette</title>
 <style>
-:root{color-scheme:dark;--paper:#f5edcf;--ink:#102c31;--yellow:#ffdb5a;--mint:#87edb1;--red:#ff8c75}*{box-sizing:border-box}body{margin:0;background:#102c31;color:var(--paper);font-family:ui-sans-serif,system-ui,sans-serif}main{max-width:1060px;margin:auto;padding:22px}header{display:flex;align-items:center;justify-content:space-between;gap:15px}small,.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#b8d1cb}h1{font-size:clamp(28px,4.8vw,53px);line-height:1.02;letter-spacing:-2px;margin:8px 0 13px}h1 span{color:var(--yellow)}.tag{border:1px solid #6b8c85;border-radius:50%;padding:15px;transform:rotate(9deg);font-weight:800;font-size:12px;text-align:center}.lead{margin:0 0 15px;color:#d5e3d9;font-size:17px}.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{border-top:2px solid #54736c;padding:7px 0}.stat b{font-variant-numeric:tabular-nums;font-size:27px;display:block}.stat small{font-size:10px;letter-spacing:1px}.stage{position:relative;border:2px solid #54736c;border-radius:12px;overflow:hidden;background:#173b40}canvas{display:block;width:100%;aspect-ratio:1000/440;touch-action:none}.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;background:#0d2b31e8;backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.card{max-width:600px}.card h2{font-size:clamp(25px,4vw,42px);margin:4px 0 10px;line-height:1.05}.card p{font-size:17px;line-height:1.45;margin:10px 0}.cards{display:flex;gap:12px;justify-content:center;margin:17px 0}.chip{background:var(--mint);color:var(--ink);padding:12px;border-radius:6px;font-weight:850;box-shadow:4px 4px 0 #0004}.chip.copy{background:var(--red);transform:rotate(4deg)}button{background:var(--yellow);border:0;border-radius:7px;padding:13px 20px;color:var(--ink);font-weight:850;font-size:17px;cursor:pointer}button:hover{filter:brightness(1.1)}button:focus-visible,summary:focus-visible{outline:3px solid white;outline-offset:3px}.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}.bar button{padding:11px 16px}.hint{font-size:13px;color:#c3d6d0}.touch{display:flex;gap:7px}.secondary{background:#294d50;color:var(--paper);border:1px solid #65827b}#feedback{min-height:22px;color:var(--yellow);font-size:14px;font-weight:700;margin:10px 0}details{border-top:1px solid #54736c;margin-top:18px;padding-top:14px;color:#c3d6d0;font-size:14px;line-height:1.6}summary{cursor:pointer;font-weight:700;color:var(--paper)}a{color:var(--yellow)}.stamp{font-weight:800;color:var(--yellow)}@media(max-width:600px){main{padding:14px}header .tag{display:none}h1{letter-spacing:-1px}.lead{font-size:14px}canvas{aspect-ratio:600/580}.hint{max-width:160px;font-size:11px}.hud{gap:5px}.stat b{font-size:24px}.card p{font-size:14px}.cards{margin:10px 0}.chip{padding:8px;font-size:13px}.card h2{font-size:28px}.bar button{padding:12px}.eyebrow{font-size:10px}}
+:root{color-scheme:light;--ink:#172a2a;--paper:#fff6dd;--mint:#c7ff80;--red:#8e251b}
+*{box-sizing:border-box}
+body{margin:0;background:#142b2b;color:var(--paper);font:1rem/1.45 system-ui,sans-serif}
+main{max-width:920px;margin:auto;padding:clamp(16px,4vw,44px)}
+header small{font:700 .8rem monospace;text-transform:uppercase;letter-spacing:.16em;color:var(--mint)}
+h1{font:900 clamp(2.7rem,8vw,6rem)/.94 Georgia,serif;margin:.12em 0 .18em;letter-spacing:-.06em}
+header p{margin:0 0 1.15rem}
+.board{padding:clamp(12px,3vw,26px);border-radius:18px;background:var(--paper);color:var(--ink);box-shadow:0 8px 0 #091b1b}
+.stats,.labels,.controls{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.stats{font-weight:800;font-variant-numeric:tabular-nums;border-bottom:1px solid #b7a886;padding-bottom:10px}
+.labels{margin-top:18px;font-size:clamp(.74rem,2.5vw,1rem);font-weight:900;text-transform:uppercase}
+.labels strong{padding:4px 8px;border-radius:5px}
+.labels .active{background:#175644;color:white}
+.track{position:relative;margin:26px 24px 20px;height:86px;border-block:2px dashed #9c8e6d;background:repeating-linear-gradient(90deg,#e5d5b1 0 1px,transparent 1px 10%);background-size:100% 100%}
+.zone{position:absolute;inset-block:0;background:var(--mint);border:3px solid #175644;border-radius:8px}
+.folder{position:absolute;left:50%;top:50%;width:44px;height:53px;transform:translate(-50%,-50%) rotate(-8deg);border:2px solid var(--ink);border-radius:4px;background:#ffcf54;color:var(--ink);display:grid;place-items:center;font:900 .6rem monospace;box-shadow:3px 4px 0 #172a2a}
+.folder.hit{animation:stamp .24s ease-out}
+@keyframes stamp{50%{scale:1.24;background:var(--mint)}}
+#message{min-height:3em;display:grid;place-items:center;text-align:center;font-weight:800;margin:0 0 10px}
+button{border:2px solid var(--ink);border-radius:8px;padding:.65em .9em;background:var(--mint);font-family:inherit;font-size:1rem;font-weight:800;color:var(--ink);cursor:pointer;min-height:46px}
+button:disabled{opacity:.52;cursor:default}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #ec8052;outline-offset:3px}
+#action{flex:1;text-transform:uppercase}
+#pause{background:transparent}
+.keys{font-size:.85rem;margin:10px 0 0}
+details{margin-top:22px;font-size:.9rem}
+summary{cursor:pointer;font-weight:800}
+a{color:var(--mint)}
+@media(prefers-reduced-motion:reduce){.folder.hit{animation:none}}
 </style>
-<main><header><div><div class="eyebrow">Bureau fictif du décompte définitif provisoire</div><h1>Un manifestant,<br><span>trois formulaires.</span></h1></div><div class="tag">PARODIE<br>17 NOV. 2026</div></header>
-<p class="lead">Comptez juste. La photocopieuse fera le reste.</p>
-<div class="hud"><div class="stat"><small>Score de rigueur</small><b id="score">0</b></div><div class="stat"><small>Temps restant</small><b id="time">30 s</b></div><div class="stat"><small>Communiqué fictif</small><b id="press">0 personnes*</b></div></div>
-<div class="stage"><canvas id="game" width="1000" height="440" aria-label="Jeu de tri : déplacez le bac sur cinq voies pour attraper les fiches vertes et éviter les copies rouges"></canvas><div id="overlay" class="overlay"><div class="card"><small id="phase">Votre mission : un décompte sans doublon</small><h2 id="headline">Le réel passe.<br>Les copies repassent.</h2><p id="message">Attrapez les fiches vertes. Chaque original génère deux copies rouges : évitez-les !</p><div class="cards" id="legend"><div class="chip">1 ORIGINAL → +10</div><div class="chip copy">COPIE → −6</div></div><button id="start">Ouvrir le bureau · 30 s</button></div></div></div>
-<div class="bar"><div class="touch"><button id="left" aria-label="Aller à gauche">←</button><button id="right" aria-label="Aller à droite">→</button></div><span class="hint">← → ou A / D · Touchez une voie<br>P : pause · Original raté : −2</span><button id="pause" class="secondary">Pause</button></div>
-<p id="feedback" role="status" aria-live="polite">Une personne. Une fiche. Deux copies. Tout va bien.</p>
-<details id="sources"><summary>À l’origine du jeu</summary><p>Le 17 novembre 2026, les manifestations en France ont réuni <strong>146 000 personnes selon le ministère de l’Intérieur</strong> et <strong>plus de 500 000 selon la CGT</strong>. Ce sont deux décomptes attribués ; ce jeu ne tranche pas leur exactitude.</p><p>Sources du 17 novembre 2026 : <a href="https://www.lemonde.fr/politique/live/2026/11/17/en-direct-manifestations-du-17-novembre-a-paris-une-manifestation-calme-a-17-heures-ayant-rassemble-28-000-personnes-selon-la-prefecture-de-police_6812905_823448.html" target="_blank" rel="noopener">Le Monde</a> · <a href="https://www.rtl.fr/actu/debats-societe/greve-du-17-novembre-pour-la-fonction-publique-146-000-manifestants-recenses-en-france-par-le-ministere-de-l-interieur-plus-de-500-000-selon-la-cgt-7900697416" target="_blank" rel="noopener">RTL</a> · <a href="https://www.ladepeche.fr/2026/11/17/direct-manifestations-du-17-novembre-nouvel-appel-a-la-greve-des-syndicats-ce-mardi-220-000-a-300-000-personnes-attendues-13656543.php" target="_blank" rel="noopener">La Dépêche</a>.</p><p><span class="stamp">Tout le reste est inventé.</span> Bureau, photocopieuse, répliques et règles sont fictifs. Le jeu raille la production de chiffres et de paperasse, sans affirmer qu’un acteur réel crée des doublons. *Le communiqué compte les fiches ramassées, copies incluses : ce n’est ni un décompte réel ni un modèle statistique. Aucun son, aucune collecte de données.</p></details>
-</main><script>
+</head>
+<body>
+<main>
+<header><small>Jeu satirique · 30 secondes</small><h1>Tampon Navette</h1><p>Visez le cadre vert. Chaque tampon réussi renvoie le budget plus vite dans l’autre chambre.</p></header>
+<section class="board" aria-label="Navette parlementaire">
+<div class="stats"><span>Score <output id="score">0</output></span><span>Erreurs <output id="errors">0</output>/3</span><span><output id="time">30</output> s</span></div>
+<div class="labels"><strong id="left">Assemblée</strong><strong id="right">Sénat</strong></div>
+<div class="track" aria-hidden="true"><div class="zone" id="zone"></div><div class="folder" id="folder">PLFSS</div></div>
+<p id="message" aria-live="polite">Le dossier attend son premier tampon.</p>
+<div class="controls"><button id="action" type="button">Jouer</button><button id="pause" type="button" disabled>Pause</button></div>
+<p class="keys">Espace pour jouer et tamponner · P pour mettre en pause</p>
+</section>
+<details><summary>À l’origine du jeu</summary>
+<p>Le Sénat a adopté sa version du budget de la Sécurité sociale pour 2027 le 18 novembre 2026, après le rejet du projet à l’Assemblée nationale. Une commission mixte paritaire doit tenter de rapprocher les positions des deux chambres.</p>
+<p>La navette à coups de tampon, les mentions et les points sont fictifs.</p>
+<ul><li><a href="https://www.publicsenat.fr/actualites/politique/budget-2027-de-la-securite-sociale-les-modifications-a-retenir-apres-le-passage-du-projet-de-loi-au-senat">Public Sénat, 18 novembre</a></li><li><a href="https://www.lemonde.fr/politique/article/2026/11/19/budget-de-la-secu-pour-2027-la-question-cle-de-l-effort-demande-aux-retraites_6813262_823448.html">Le Monde, 19 novembre</a></li></ul>
+</details>
+</main>
+<script>
 'use strict';
-// Pure rules, shared by the browser and the offline engine tests.
-function newGame(){return {mode:'playing',time:30,lane:2,score:0,originals:0,copies:0,missed:0,items:[],pending:[],spawn:0.3,nextId:0,flash:0};}
-function move(s,d){if(s.mode==='playing')s.lane=Math.max(0,Math.min(4,s.lane+d));}
-function catchItem(s,item){if(item.copy){s.score-=6;s.copies++;return 'COPIE ! Le communiqué grossit. La rigueur baisse.';}s.score+=10;s.originals++;for(let n=0;n<2;n++)s.pending.push({delay:0.4+n*0.5,lane:(item.lane+1+n*2)%5,copy:true});return 'Original compté. Deux copies sortent de la machine…';}
-function step(s,dt,rng=Math.random){if(s.mode!=='playing')return [];dt=Math.min(dt,s.time);s.time=Math.max(0,s.time-dt);s.flash=Math.max(0,s.flash-dt);const events=[];s.spawn-=dt;if(s.spawn<=0){s.items.push({id:s.nextId++,lane:Math.floor(rng()*5),y:-0.12,copy:false});s.spawn+=0.8;}
-for(const p of s.pending)p.delay-=dt;const ready=s.pending.filter(p=>p.delay<=0);s.pending=s.pending.filter(p=>p.delay>0);for(const p of ready)s.items.push({id:s.nextId++,lane:p.lane,y:-0.12,copy:true});
-for(const item of s.items){const before=item.y;item.y+=dt*(item.copy?0.34:0.25);if(before<0.84&&item.y>=0.84&&s.lane===item.lane){events.push(catchItem(s,item));item.done=true;s.flash=0.2;}else if(item.y>1.08){if(!item.copy){s.score-=2;s.missed++;events.push('Original raté : −2. La paperasse, elle, reste.');}item.done=true;}}
-s.items=s.items.filter(i=>!i.done);if(s.time<=0)s.mode='ended';return events;}
-if(typeof module!=='undefined')module.exports={newGame,move,catchItem,step};
-if(typeof document!=='undefined'){
-const c=document.getElementById('game'),ctx=c.getContext('2d'),$=id=>document.getElementById(id);let s=newGame();s.mode='ready';let last=0,notice='Une personne. Une fiche. Deux copies. Tout va bien.';
-function layout(){const mobile=window.innerWidth<600;c.width=mobile?600:1000;c.height=mobile?580:440;}layout();window.addEventListener('resize',layout);
-function sync(){ $('score').textContent=s.score; $('time').textContent=Math.ceil(s.time)+' s';$('press').textContent=(s.originals+s.copies)+((s.originals+s.copies)===1?' personne*':' personnes*');$('pause').textContent=s.mode==='paused'?'Reprendre':'Pause';$('pause').disabled=s.mode==='ready'||s.mode==='ended';$('feedback').textContent=notice;}
-function start(){s=newGame();last=0;notice='Le bureau est ouvert. Visez le vert, fuyez le rouge.';$('overlay').hidden=true;sync();}
-function pause(){if(s.mode==='playing'){s.mode='paused';$('phase').textContent='Pause · le temps est arrêté';$('headline').textContent='Même la photocopieuse souffle.';$('message').textContent='Reprenez quand vous êtes prêt.';$('legend').hidden=true;$('start').textContent='Reprendre';$('overlay').hidden=false;}else if(s.mode==='paused'){s.mode='playing';last=0;$('overlay').hidden=true;}sync();}
-function end(){const total=s.originals+s.copies,precision=total?Math.round(s.originals/total*100):0;$('phase').textContent='Bureau fermé · bilan définitif provisoire';$('headline').textContent=s.score>=100?'Vous avez résisté à la paperasse.':'La photocopieuse demande une promotion.';$('message').textContent=s.originals+' originaux comptés · '+s.copies+' copies avalées · '+s.missed+' originaux ratés. Précision : '+precision+' %. Le communiqué annonce '+total+' personnes pour '+s.originals+' fiches originales attrapées.';$('legend').hidden=false;$('start').textContent='Revanche · 30 s';$('overlay').hidden=false;notice='Score final : '+s.score+' points. Une copie n’est toujours pas une personne.';sync();}
-$('start').onclick=()=>s.mode==='paused'?pause():start();$('pause').onclick=pause;$('left').onclick=()=>move(s,-1);$('right').onclick=()=>move(s,1);
-window.addEventListener('keydown',e=>{if(e.target.closest('details,button')&&e.key===' ')return;if(['ArrowLeft','ArrowRight','a','A','d','D','p','P',' '].includes(e.key))e.preventDefault();if(['ArrowLeft','a','A'].includes(e.key))move(s,-1);if(['ArrowRight','d','D'].includes(e.key))move(s,1);if(['p','P'].includes(e.key))pause();if(e.key===' '&&['ready','ended'].includes(s.mode))start();});
-c.addEventListener('pointerdown',e=>{if(s.mode!=='playing')return;const r=c.getBoundingClientRect();s.lane=Math.max(0,Math.min(4,Math.floor((e.clientX-r.left)/r.width*5)));});document.addEventListener('visibilitychange',()=>{if(document.hidden&&s.mode==='playing')pause();});
-function draw(){const w=c.width,h=c.height,lw=w/5;ctx.fillStyle='#173b40';ctx.fillRect(0,0,w,h);for(let i=0;i<5;i++){ctx.fillStyle=i%2?'#20454a':'#1b3e43';ctx.fillRect(i*lw,0,lw,h);ctx.strokeStyle='#55716b';ctx.setLineDash([5,10]);ctx.beginPath();ctx.moveTo(i*lw,48);ctx.lineTo(i*lw,h);ctx.stroke();}ctx.setLineDash([]);ctx.fillStyle='#102c31';ctx.fillRect(0,0,w,45);ctx.fillStyle='#d7e5d9';ctx.font='bold '+(w<800?17:20)+'px system-ui';ctx.textAlign='center';ctx.fillText('PHOTOCOPIEUSE  →  1 original = 2 nouvelles copies',w/2,29);
-for(const item of s.items){const x=(item.lane+.5)*lw,y=item.y*h,ww=Math.min(lw-20,116),hh=w<800?65:60;ctx.save();ctx.translate(x,y);ctx.rotate(item.copy?Math.sin(item.y*13)*.08:0);ctx.fillStyle='#0004';ctx.fillRect(-ww/2+4,-hh/2+5,ww,hh);ctx.fillStyle=item.copy?'#ff9b83':'#87edb1';ctx.fillRect(-ww/2,-hh/2,ww,hh);ctx.fillStyle='#153338';ctx.font='900 '+(w<800?18:20)+'px system-ui';ctx.fillText(item.copy?'COPIE':'1 VRAI',0,-2);ctx.font='bold 12px system-ui';ctx.fillText(item.copy?'DOUBLON':'ORIGINAL',0,18);ctx.restore();}
-ctx.strokeStyle='#ffdb5a80';ctx.setLineDash([8,7]);ctx.beginPath();ctx.moveTo(0,h*.84);ctx.lineTo(w,h*.84);ctx.stroke();ctx.setLineDash([]);const x=(s.lane+.5)*lw;ctx.fillStyle=s.flash?'#fff4b1':'#ffdb5a';ctx.beginPath();ctx.moveTo(x-lw*.45,h*.84-5);ctx.lineTo(x+lw*.45,h*.84-5);ctx.lineTo(x+lw*.34,h*.98);ctx.lineTo(x-lw*.34,h*.98);ctx.closePath();ctx.fill();ctx.fillStyle='#153338';ctx.font='900 '+(w<800?14:19)+'px system-ui';ctx.fillText('COMPTER',x,h*.94);}
-function frame(t){const dt=last?Math.min(.05,(t-last)/1000):0;last=t;if(s.mode==='playing'){const events=step(s,dt);if(events.length)notice=events[events.length-1];sync();if(s.mode==='ended')end();}draw();requestAnimationFrame(frame);}sync();requestAnimationFrame(frame);
+const duration = 30;
+const stampMessages = ['Adopté… sous réserve.', 'Bon pour nouveau débat.', 'Compromis à revoir.', 'À renvoyer en urgence.', 'Validé pour réexamen.'];
+const elements = Object.fromEntries(['score','errors','time','left','right','zone','folder','message','action','pause'].map(id => [id, document.getElementById(id)]));
+let game = fresh('ready');
+let previous = 0;
+
+function fresh(mode) {
+  return {mode, elapsed:0, x:.12, direction:1, score:0, errors:0, message:'Le dossier attend son premier tampon.'};
 }
-</script></html>
+
+function target() {
+  return game.direction === 1 ? [.73,.93] : [.07,.27];
+}
+
+function miss(reason) {
+  game.errors++;
+  game.message = reason;
+  if (game.errors === 3) {
+    finish();
+    return;
+  }
+  game.x = game.direction === 1 ? .12 : .88;
+}
+
+function finish() {
+  game.mode = 'done';
+  game.message = game.score >= 10 ? 'Médaille d’or du renvoi en commission !' : 'Séance levée. Le dossier reste sur le bureau.';
+}
+
+function advance(seconds) {
+  game.elapsed = Math.min(duration, game.elapsed + seconds);
+  if (game.elapsed >= duration) {
+    finish();
+    return;
+  }
+  const speed = Math.min(.95, .36 + .045 * game.score);
+  game.x += game.direction * speed * seconds;
+  if (game.x > .985 || game.x < .015) miss('Hors délai ! Le dossier repart du début.');
+}
+
+function action() {
+  if (game.mode === 'ready' || game.mode === 'done') {
+    game = fresh('play');
+    game.message = 'Tamponnez quand le centre du dossier entre dans le cadre.';
+    previous = performance.now();
+  } else if (game.mode === 'paused') {
+    togglePause();
+  } else {
+    const [start,end] = target();
+    if (game.x >= start && game.x <= end) {
+      game.message = stampMessages[game.score % stampMessages.length];
+      game.score++;
+      game.direction *= -1;
+      elements.folder.classList.remove('hit');
+      void elements.folder.offsetWidth;
+      elements.folder.classList.add('hit');
+    } else {
+      miss('Tampon à côté ! Le dossier repart du début.');
+    }
+  }
+  render();
+}
+
+function togglePause() {
+  if (game.mode === 'play') game.mode = 'paused';
+  else if (game.mode === 'paused') {
+    game.mode = 'play';
+    previous = performance.now();
+  }
+  render();
+}
+
+function render() {
+  const [start,end] = target();
+  elements.zone.style.left = (start * 100) + '%';
+  elements.zone.style.width = ((end - start) * 100) + '%';
+  elements.folder.style.left = (game.x * 100) + '%';
+  elements.left.classList.toggle('active', game.direction === -1);
+  elements.right.classList.toggle('active', game.direction === 1);
+  const values = {
+    score:game.score, errors:game.errors, time:Math.ceil(duration - game.elapsed),
+    message:game.mode === 'paused' ? 'Séance suspendue.' : game.message,
+    action:{ready:'Jouer',play:'Tamponner',paused:'Reprendre',done:'Revanche'}[game.mode],
+    pause:game.mode === 'paused' ? 'Reprendre' : 'Pause'
+  };
+  for (const [id,value] of Object.entries(values)) {
+    if (elements[id].textContent !== String(value)) elements[id].textContent = value;
+  }
+  elements.pause.disabled = game.mode === 'ready' || game.mode === 'done';
+}
+
+function frame(now) {
+  if (game.mode === 'play') {
+    advance(Math.min(.1, Math.max(0, (now - previous) / 1000)));
+    render();
+  }
+  previous = now;
+  requestAnimationFrame(frame);
+}
+
+elements.action.addEventListener('click', action);
+elements.pause.addEventListener('click', togglePause);
+document.addEventListener('keydown', event => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
+  if (event.code === 'Space' && !event.target.closest('a,summary,#pause')) {
+    event.preventDefault();
+    action();
+  }
+  if (event.key.toLowerCase() === 'p') togglePause();
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && game.mode === 'play') togglePause();
+});
+render();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
